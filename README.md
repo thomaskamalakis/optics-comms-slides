@@ -1,51 +1,65 @@
-# Optics Communications Library
+# Optics Library
 
-This repository contains Python libraries and examples for optical communications calculations.
+A Python library for optical communications calculations with numpy and matplotlib support.
 
-## Library
+## Features
 
-- `optics_lib.py`: Core library with optical calculations functions
+- Frequency/wavelength conversions
+- Optical bandwidth calculations
+- Mathematical functions for optics applications
 
-## Examples
+## Installation
 
-- `example1.py`: Basic optics calculations (Snell's law, fiber NA, power ratios)
-- `example2.py`: Advanced optics calculations (Gaussian beams, mode field diameters, etc.)
+```bash
+# Clone the repository
+git clone https://gitlab.com/thkam/optics-comms-slides.git
+cd optics-comms-slides
+```
 
 ## Usage
 
 ```python
 import optics_lib
 
-# Calculate Snell's law
-theta2 = optics_lib.snell_law(n1=1.0, n2=1.5, theta1=30)
+# Convert frequency to wavelength
+wavelength = optics_lib.frequency_to_wavelength(193.1e12, unit='THz')
 
-# Calculate fiber numerical aperture
-na = optics_lib.fiber_numerical_aperture(n_core=1.46, n_cladding=1.40)
+# Convert wavelength to frequency  
+frequency = optics_lib.wavelength_to_frequency(1550e-9, unit='nm')
+
+# Calculate frequency bandwidth from wavelength bandwidth
+delta_f = optics_lib.delta_lambda_to_delta_frequency(0.1e-9, 1550e-9)
 ```
 
 ## Functions
 
-### Basic Optics
-- `snell_law(n1, n2, theta1)`: Snell's law refraction calculation
-- `power_ratio_db(P1, P2)`: Power ratio in decibels
-- `attenuation_coefficient(L, P1, P2)`: Attenuation coefficient
+### Basic Conversions
+- `frequency_to_wavelength(frequency, unit='Hz')` - Convert frequency to wavelength
+- `wavelength_to_frequency(wavelength, unit='m')` - Convert wavelength to frequency
 
-### Fiber Optics  
-- `fiber_numerical_aperture(n_core, n_cladding)`: Numerical aperture
-- `fiber_acceptance_angle(n_core, n_cladding)`: Acceptance angle
-- `fiber_mode_field_diameter(n_core, n_cladding, lambda_, V)`: Mode field diameter
-- `fiber_cutoff_wavelength(n_core, n_cladding, a)`: Cutoff wavelength
+### Optical Calculations
+- `delta_lambda_to_delta_frequency(delta_lambda, lambda_0, method='exact')` - Convert wavelength bandwidth to frequency bandwidth
 
-### Beam Optics
-- `rayleigh_range(w0, lambda_)`: Rayleigh range for Gaussian beam
-- `gaussian_beam_radius(w0, z, lambda_)`: Beam radius at distance z
-- `optical_path_difference(n, d, theta)`: Optical path difference
+## License
 
-### Power and Intensity
-- `optical_power_from_intensity(intensity, area)`: Calculate power from intensity
-- `intensity_from_power(power, area)`: Calculate intensity from power
+MIT License
 
-### Reflection and Transmission
-- `reflection_coefficient(n1, n2)`: Reflection coefficient
-- `transmission_coefficient(n1, n2)`: Transmission coefficient
-- `critical_angle(n1, n2)`: Critical angle for total internal reflection
+Copyright (c) 2026 Thomas Kamalakis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
