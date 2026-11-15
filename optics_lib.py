@@ -5,6 +5,12 @@ Optics Library for optical communications calculations
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Physical constants
+C = 299792458  # Speed of light in vacuum (m/s)
+K_B = 1.380649e-23  # Boltzmann constant (J/K)
+E = 1.602176634e-19  # Elementary charge (C)
+H = 6.62607015e-34  # Planck's constant (J·s)
+
 def frequency_to_wavelength(frequency, unit='Hz'):
     """
     Convert frequency to wavelength using the speed of light.
