@@ -10,3 +10,6 @@
 *.fls
 *.fdb_latexmk
 __pycache__/
+# Generated figures
+*.pdf
+*.png
