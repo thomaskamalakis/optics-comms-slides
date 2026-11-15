@@ -259,7 +259,9 @@ class Fiber:
         self.D = D  # Dispersion coefficient in ps/(nm·km)
         
         # Calculate equivalent β² parameter (second derivative of phase constant)
-        # β² = -D / (2πc) where c is speed of light
-        self.beta2 = -D / (2 * np.pi * 299792458)  # s²/m
+        # β² = -D × λ₀² / (2πc) where c is speed of light and λ₀ is reference wavelength
+        # Using standard reference wavelength of 1550 nm (1.55 μm)
+        lambda_ref_m = 1.55e-6  # Reference wavelength in meters (1550 nm)
+        self.beta2 = -self.D * lambda_ref_m**2 / (2 * np.pi * 299792458)  # s²/m
 
 # Library skeleton with imports
