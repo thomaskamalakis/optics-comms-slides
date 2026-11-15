@@ -99,4 +99,58 @@ def delta_lambda_to_delta_frequency(delta_lambda, lambda_0, method='exact'):
     
     return delta_frequency
 
+def power_linear_to_db(power_linear, reference_power=1.0):
+    """
+    Convert linear power to decibel (dB) scale.
+    
+    Parameters:
+    power_linear (float): Power in linear scale
+    reference_power (float): Reference power level (default 1.0 for dBm, 1.0 for dB)
+    
+    Returns:
+    float: Power in dB scale
+    
+    Formula used:
+    P(dB) = 10 * log10(P_linear / P_reference)
+    """
+    if power_linear <= 0:
+        raise ValueError("Power must be positive")
+    
+    return 10 * np.log10(power_linear / reference_power)
+
+def power_db_to_linear(power_db, reference_power=1.0):
+    """
+    Convert decibel (dB) power to linear scale.
+    
+    Parameters:
+    power_db (float): Power in dB scale
+    reference_power (float): Reference power level (default 1.0 for dBm, 1.0 for dB)
+    
+    Returns:
+    float: Power in linear scale
+    
+    Formula used:
+    P_linear = P_reference * 10^(P_dB / 10)
+    """
+    return reference_power * np.power(10, power_db / 10)
+
+def power_ratio_db(power1, power2):
+    """
+    Calculate the power ratio in decibels.
+    
+    Parameters:
+    power1 (float): First power value
+    power2 (float): Second power value
+    
+    Returns:
+    float: Power ratio in dB
+    
+    Formula used:
+    P_ratio(dB) = 10 * log10(P1 / P2)
+    """
+    if power1 <= 0 or power2 <= 0:
+        raise ValueError("Power values must be positive")
+    
+    return 10 * np.log10(power1 / power2)
+
 # Library skeleton with imports
