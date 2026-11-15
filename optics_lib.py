@@ -153,4 +153,74 @@ def power_ratio_db(power1, power2):
     
     return 10 * np.log10(power1 / power2)
 
+def gain_linear_to_db(gain_linear, reference_gain=1.0):
+    """
+    Convert linear gain to decibel (dB) scale.
+    
+    Parameters:
+    gain_linear (float): Gain in linear scale
+    reference_gain (float): Reference gain level (default 1.0 for dB)
+    
+    Returns:
+    float: Gain in dB scale
+    
+    Formula used:
+    G(dB) = 10 * log10(G_linear / G_reference)
+    """
+    if gain_linear <= 0:
+        raise ValueError("Gain must be positive")
+    
+    return 10 * np.log10(gain_linear / reference_gain)
+
+def gain_db_to_linear(gain_db, reference_gain=1.0):
+    """
+    Convert decibel (dB) gain to linear scale.
+    
+    Parameters:
+    gain_db (float): Gain in dB scale
+    reference_gain (float): Reference gain level (default 1.0 for dB)
+    
+    Returns:
+    float: Gain in linear scale
+    
+    Formula used:
+    G_linear = G_reference * 10^(G_dB / 10)
+    """
+    return reference_gain * np.power(10, gain_db / 10)
+
+def loss_linear_to_db(loss_linear, reference_loss=1.0):
+    """
+    Convert linear loss to decibel (dB) scale.
+    
+    Parameters:
+    loss_linear (float): Loss in linear scale
+    reference_loss (float): Reference loss level (default 1.0 for dB)
+    
+    Returns:
+    float: Loss in dB scale
+    
+    Formula used:
+    L(dB) = 10 * log10(L_linear / L_reference)
+    """
+    if loss_linear <= 0:
+        raise ValueError("Loss must be positive")
+    
+    return 10 * np.log10(loss_linear / reference_loss)
+
+def loss_db_to_linear(loss_db, reference_loss=1.0):
+    """
+    Convert decibel (dB) loss to linear scale.
+    
+    Parameters:
+    loss_db (float): Loss in dB scale
+    reference_loss (float): Reference loss level (default 1.0 for dB)
+    
+    Returns:
+    float: Loss in linear scale
+    
+    Formula used:
+    L_linear = L_reference * 10^(L_dB / 10)
+    """
+    return reference_loss * np.power(10, loss_db / 10)
+
 # Library skeleton with imports
