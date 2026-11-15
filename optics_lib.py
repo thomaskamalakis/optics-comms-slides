@@ -223,4 +223,43 @@ def loss_db_to_linear(loss_db, reference_loss=1.0):
     """
     return reference_loss * np.power(10, loss_db / 10)
 
+class Fiber:
+    """
+    Fiber class representing optical fiber properties.
+    
+    This class encapsulates the key physical parameters of an optical fiber
+    including refractive indices, attenuation coefficients, and dispersion 
+    parameters.
+    
+    Parameters:
+    n1 (float): Core refractive index
+    n2 (float): Cladding refractive index  
+    a_dB (float): Attenuation coefficient in dB/km
+    D (float): Dispersion coefficient in ps/(nm·km)
+    
+    Example:
+    >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16)
+    >>> print(fiber.n1, fiber.n2, fiber.a_dB, fiber.D)
+    1.46 1.44 0.2 16
+    """
+    
+    def __init__(self, n1, n2, a_dB, D):
+        """
+        Initialize a Fiber object with its key parameters.
+        
+        Parameters:
+        n1 (float): Core refractive index
+        n2 (float): Cladding refractive index  
+        a_dB (float): Attenuation coefficient in dB/km
+        D (float): Dispersion coefficient in ps/(nm·km)
+        """
+        self.n1 = n1  # Core refractive index
+        self.n2 = n2  # Cladding refractive index
+        self.a_dB = a_dB  # Attenuation coefficient in dB/km
+        self.D = D  # Dispersion coefficient in ps/(nm·km)
+        
+        # Calculate equivalent β² parameter (second derivative of phase constant)
+        # β² = -D / (2πc) where c is speed of light
+        self.beta2 = -D / (2 * np.pi * 299792458)  # s²/m
+
 # Library skeleton with imports
