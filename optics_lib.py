@@ -588,6 +588,9 @@ class Fiber:
         >>> fiber.multimode_dispersion_broadening(1550e-9)
         7.038471285487207e-09
         """
+        if wavelength_m is None:
+            wavelength_m = self.lambda_ref_m
+            
         return self.time_difference(wavelength_m)
 
 # Library skeleton with imports
