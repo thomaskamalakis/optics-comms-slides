@@ -23,7 +23,7 @@ def frequency_to_wavelength(frequency, unit='Hz'):
     float: Wavelength in meters
     """
     # Speed of light in vacuum (m/s)
-    c = 299792458
+    c = C
     
     # Convert frequency to Hz if needed
     if unit == 'GHz':
@@ -47,7 +47,7 @@ def wavelength_to_frequency(wavelength, unit='m'):
     float: Frequency in Hz
     """
     # Speed of light in vacuum (m/s)
-    c = 299792458
+    c = C
     
     # Convert wavelength to meters if needed
     if unit == 'nm':
@@ -86,7 +86,7 @@ def delta_lambda_to_delta_frequency(delta_lambda, lambda_0, method='exact'):
     19375000000.0
     """
     # Speed of light in vacuum (m/s)
-    c = 299792458
+    c = C
     
     if method == 'exact':
         # Calculate exact values using the two wavelength limits
@@ -234,22 +234,24 @@ class Fiber:
     Fiber class representing optical fiber properties.
     
     This class encapsulates the key physical parameters of an optical fiber
-    including refractive indices, attenuation coefficients, and dispersion 
-    parameters.
+    including refractive indices, attenuation coefficients, dispersion parameters,
+    and fiber core radius.
     
     Parameters:
     n1 (float): Core refractive index
     n2 (float): Cladding refractive index  
     a_dB (float): Attenuation coefficient in dB/km
     D (float): Dispersion coefficient in ps/(nm·km)
+    a (float): Fiber core radius in meters
+    lambda_ref_m (float): Reference wavelength in meters for dispersion calculations (default: 1.55e-6)
     
     Example:
-    >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16)
-    >>> print(fiber.n1, fiber.n2, fiber.a_dB, fiber.D)
-    1.46 1.44 0.2 16
+    >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6)
+    >>> print(fiber.n1, fiber.n2, fiber.a_dB, fiber.D, fiber.a)
+    1.46 1.44 0.2 16 5e-06
     """
     
-    def __init__(self, n1, n2, a_dB, D):
+    def __init__(self, n1, n2, a_dB, D, a, lambda_ref_m=1.55e-6):
         """
         Initialize a Fiber object with its key parameters.
         
@@ -258,16 +260,116 @@ class Fiber:
         n2 (float): Cladding refractive index  
         a_dB (float): Attenuation coefficient in dB/km
         D (float): Dispersion coefficient in ps/(nm·km)
+        a (float): Fiber core radius in meters
+        lambda_ref_m (float): Reference wavelength in meters for dispersion calculations (default: 1.55e-6)
+        
+        The reference wavelength is used to calculate the β² parameter (second derivative 
+        of phase constant) which is wavelength-dependent. The default value of 1.55 μm 
+        corresponds to standard telecommunications wavelengths.
         """
         self.n1 = n1  # Core refractive index
         self.n2 = n2  # Cladding refractive index
         self.a_dB = a_dB  # Attenuation coefficient in dB/km
         self.D = D  # Dispersion coefficient in ps/(nm·km)
+        self.a = a  # Fiber core radius in meters
+        self.lambda_ref_m = lambda_ref_m  # Reference wavelength for dispersion calculations
         
         # Calculate equivalent β² parameter (second derivative of phase constant)
         # β² = -D × λ₀² / (2πc) where c is speed of light and λ₀ is reference wavelength
         # Using standard reference wavelength of 1550 nm (1.55 μm)
-        lambda_ref_m = 1.55e-6  # Reference wavelength in meters (1550 nm)
-        self.beta2 = -self.D * lambda_ref_m**2 / (2 * np.pi * 299792458)  # s²/m
+        self.beta2 = -self.D * self.lambda_ref_m**2 / (2 * np.pi * C)  # s²/m
+    
+    def numerical_aperture(self):
+        """
+        Calculate the numerical aperture (NA) of the fiber.
+        
+        The numerical aperture is defined as:
+        NA = sqrt(n1² - n2²)
+        
+        Returns:
+        float: Numerical aperture of the fiber
+        
+        Example:
+        >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6)
+        >>> fiber.numerical_aperture()
+        0.28284271247461903
+        """
+        return np.sqrt(self.n1**2 - self.n2**2)
+    
+    def V_parameter(self, wavelength_m):
+        """
+        Calculate the normalized frequency (V-parameter) of the fiber.
+        
+        The V-parameter is a dimensionless quantity that characterizes the number
+        of modes that can propagate in an optical fiber. It is defined as:
+        V = (2πa/λ) * sqrt(n1² - n2²) = (2πa/λ) * NA
+        
+        Parameters:
+        wavelength_m (float): Wavelength in meters
+        
+        Returns:
+        float: Normalized frequency (V-parameter)
+        
+        Example:
+        >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6)
+        >>> fiber.V_parameter(1550e-9)
+        2.378534564247043
+        """
+        # Calculate numerical aperture
+        NA = self.numerical_aperture()
+        
+        # Calculate V-parameter: V = (2πa/λ) * NA
+        V = (2 * np.pi * self.a) / wavelength_m * NA
+        
+        return V
+    
+    def approximate_number_of_modes(self, wavelength_m):
+        """
+        Calculate the approximate number of modes in the fiber.
+        
+        For step-index multimode fibers with large V-numbers, the approximate
+        number of modes is given by:
+        N ≈ V²/2 (counting both polarization directions)
+        
+        Parameters:
+        wavelength_m (float): Wavelength in meters
+        
+        Returns:
+        int: Approximate number of guided modes
+        
+        Example:
+        >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6)
+        >>> fiber.approximate_number_of_modes(1550e-9)
+        3
+        """
+        V = self.V_parameter(wavelength_m)
+        
+        # For step-index fibers with large V-numbers: N ≈ V²/2
+        # Counting both polarization directions (horizontal and vertical)
+        number_of_modes = int(V**2 / 2)
+        
+        return number_of_modes
+    
+    def is_single_mode(self, wavelength_m):
+        """
+        Determine if the fiber operates in single-mode at a given wavelength.
+        
+        Single-mode operation occurs when V < 2.4048 (first root of Bessel function J₀).
+        
+        Parameters:
+        wavelength_m (float): Wavelength in meters
+        
+        Returns:
+        bool: True if fiber is single-mode at the given wavelength, False otherwise
+        
+        Example:
+        >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6)
+        >>> fiber.is_single_mode(1550e-9)
+        True
+        """
+        V = self.V_parameter(wavelength_m)
+        
+        # Single-mode condition: V < 2.4048 (first root of Bessel function J₀)
+        return V < 2.4048
 
 # Library skeleton with imports
