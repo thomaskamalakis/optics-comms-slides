@@ -479,7 +479,7 @@ class Fiber:
         
         Example:
         >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6, L=1000.0)
-        >>> fiber.fastest_path_time(1550e-9)
+        >>> fiber.fastest_path_time(wavelength_m=1550e-9)
         2.397445812431359e-06
         """
         if wavelength_m is None:
@@ -516,7 +516,7 @@ class Fiber:
         
         Example:
         >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6, L=1000.0)
-        >>> fiber.slowest_path_time(1550e-9)
+        >>> fiber.slowest_path_time(wavelength_m=1550e-9)
         2.953730250284179e-05
         """
         if wavelength_m is None:
@@ -553,7 +553,7 @@ class Fiber:
         
         Example:
         >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6, L=1000.0)
-        >>> fiber.time_difference(1550e-9)
+        >>> fiber.time_difference(wavelength_m=1550e-9)
         7.038471285487207e-09
         """
         if wavelength_m is None:
@@ -585,7 +585,7 @@ class Fiber:
         
         Example:
         >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6, L=1000.0)
-        >>> fiber.multimode_dispersion_broadening(1550e-9)
+        >>> fiber.multimode_dispersion_broadening(wavelength_m=1550e-9)
         7.038471285487207e-09
         """
         if wavelength_m is None:
