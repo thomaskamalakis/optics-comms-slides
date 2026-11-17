@@ -563,5 +563,31 @@ class Fiber:
         t_slow = self.slowest_path_time(wavelength_m)
         
         return t_slow - t_fast
+    
+    def multimode_dispersion_broadening(self, wavelength_m=None):
+        """
+        Estimate the multimode dispersion broadening in the fiber.
+        
+        In multimode fibers, different propagation paths (modes) travel at different speeds,
+        causing pulse broadening. This broadening is quantified by the time difference
+        between the fastest and slowest propagation paths.
+        
+        The time difference represents the maximum possible pulse broadening due to 
+        intermodal dispersion (also called modal dispersion). For a Gaussian input pulse,
+        this time difference corresponds to the full width at half maximum (FWHM) of the 
+        output pulse spread.
+        
+        Parameters:
+        wavelength_m (float): Wavelength in meters. If None, uses self.lambda_ref_m (default: 1.55e-6)
+        
+        Returns:
+        float: Maximum pulse broadening time in seconds due to multimode dispersion
+        
+        Example:
+        >>> fiber = Fiber(n1=1.46, n2=1.44, a_dB=0.2, D=16, a=5e-6, L=1000.0)
+        >>> fiber.multimode_dispersion_broadening(1550e-9)
+        7.038471285487207e-09
+        """
+        return self.time_difference(wavelength_m)
 
 # Library skeleton with imports
