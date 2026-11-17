@@ -310,8 +310,8 @@ class Fiber:
         # Calculate relative refractive index difference
         delta = (self.n1**2 - self.n2**2) / (2 * self.n1**2)
         
-        # Calculate normalized frequency V parameter
-        V = 2 * np.pi * self.a * np.sqrt(self.n1**2 - self.n2**2) / wavelength_m
+        # Calculate normalized frequency V parameter using existing method
+        V = self.V_parameter(wavelength_m)
         
         # For single-mode operation, V < 2.405
         if V >= 2.405:
